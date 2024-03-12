@@ -1,0 +1,4 @@
+
+const fetchEvents = (req,res) =>{
+    
+}

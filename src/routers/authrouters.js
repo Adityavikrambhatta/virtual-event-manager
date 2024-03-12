@@ -1,6 +1,6 @@
 const bcrypt = require("bcrypt");
 const path = require("path");
-const User = require(path.join("..", "models", "User.js"));
+const User = require(path.join("..", "models", "user.js"));
 const jwt = require("jsonwebtoken");
 var signUp = (req, res) => {
   const user = User({
@@ -37,8 +37,7 @@ var login = (req, res) => {
       if (!passwordIsValid) {
         return res.status(401).send({ message: "Invalid Password" });
       } else {
-     
-            console.log("API_SECRET:", process.env.API_SECRET);
+    
             var token = jwt.sign(
                 {
                   id: user.id,

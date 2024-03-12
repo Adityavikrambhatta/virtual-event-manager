@@ -1,6 +1,6 @@
 const path = require("path")
 const jwt = require('jsonwebtoken')
-const User = require(path.join("..","models","User.js"))
+const User = require(path.join("..","models","user.js"))
 
 const verifyToken =(req, res, next)=>{
     if ( req.headers && req.headers.authorization){

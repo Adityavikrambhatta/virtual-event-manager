@@ -7,10 +7,13 @@ const mongoose = require('mongoose')
 
 require('dotenv').config();
 
-// const eventsRouters =require(path.join(__dirname, "src", "routers", "eventsrouters.js"))
+const eventsRouters = require(path.join(__dirname, "src", "routers", "eventsrouters.js"))
 const {signUp, login} = require(path.join(__dirname,"src", "routers", "authrouters.js"))
+const verifyToken = require(path.join(__dirname, "src", "routers", "middleware.js"))
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 
 try{
     mongoose.connect("mongodb://localhost:27017/eventManagerDb",{
@@ -32,7 +35,7 @@ app.get('/', (req, res)=>{
 app.post('/register', signUp );
 app.post('/login', login ) ;
 
-// app.use("/events", eventsRouters )
+app.use('/events', verifyToken ,eventsRouters );
 
 
 app.listen(port, (err) => {
