@@ -1,11 +1,11 @@
 const express = require("express");
 const eventRouter = express.Router();
 const path = require("path");
-const { findById } = require("../models/event");
 const User = require(path.join("..", "models", "user.js"));
 const Event = require(path.join("..", "models", "event.js"));
 const Validators = require(path.join("..", "helpers", "validator.js"));
 const _ = require("lodash");
+
 eventRouter.get("/:id", (req, res) => {
     if (req.user && req.user.role == "organiser") {
         var { id } = req.params;
@@ -22,6 +22,7 @@ eventRouter.get("/:id", (req, res) => {
 });
 
 eventRouter.post("/", (req, res) => {
+    
     if (req.user && req.user.role == "organiser") {
         var {
             eventName,
@@ -46,12 +47,13 @@ eventRouter.post("/", (req, res) => {
             eventDescription: eventDescription ? eventDescription : "",
             participants: participants ? participants : [createdBy],
         });
+        console.log(event)
         event
             .save()
             .then((data) => {
                 return res
                     .status(200)
-                    .json({ user: data, message: "User created successfully." });
+                    .json({ event: data, message: "User created successfully." });
             })
             .catch((err) => {
                 return res.status(400).send({ message: err });
@@ -110,6 +112,18 @@ eventRouter.put("/:id", (req, res) => {
     }
 });
 
+eventRouter.delete("/:id", (req, res) => {
+    if (req.user && req.user.role == "organiser") {
+        var { id } = req.params;
+        Event.deleteOne({_id : id}).then(data =>{
+            return res.status(200).json({ data : data, message : "The event has been removed from the Event list."})
+        }).catch(err =>{
+            return res.status(500).json({ err : err, message : "Unable to delete event."})
+        })
+    } else {
+        res.status(403).send("Unauthorized to perform this action.");
+    }
+})
 module.exports = eventRouter;
 
 

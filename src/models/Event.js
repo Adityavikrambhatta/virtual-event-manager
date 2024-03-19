@@ -1,9 +1,8 @@
 var mongoose = require('mongoose')
 const path = require('path')
-const User  =require(path.join(__dirname,"user.js"))
 var Schema = mongoose.Schema
 
-var userSchema = new Schema({
+var userSchemaNew = new Schema({
     name : {
         type : String,
         required : "Unable to find the user name", 
@@ -13,7 +12,6 @@ var userSchema = new Schema({
         required : [true, "Email not provided." ],
         lowercase: true,
         trim: true,
-        unique: [true, "Email already exist in the database."],
         validate : {
             validator : function(v) {
                 return /^[a-zA-Z0-9_.+]*[a-zA-Z][a-zA-Z0-9_.+]*@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
@@ -27,7 +25,7 @@ var userSchema = new Schema({
         type : String, 
         required : [true, " Role not provided"],
         enum : ["organiser", "participant"]
-},
+}
 })
 
 var eventSchema = new Schema({
@@ -53,10 +51,10 @@ var eventSchema = new Schema({
         minimum : 30
     },
     participants : [{
-        type: userSchema
+        type: userSchemaNew
     }], 
     createdBy : {
-      type: userSchema,
+      type: userSchemaNew,
       required : true
     }
 })
