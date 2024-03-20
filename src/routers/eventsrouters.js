@@ -124,6 +124,29 @@ eventRouter.delete("/:id", (req, res) => {
         res.status(403).send("Unauthorized to perform this action.");
     }
 })
+
+eventRouter.post("/:id/register", async (req,res)=>{
+    if(req.user && (req.user.role == "organiser" || req.user.role == "participant")){
+        var { id } = req.params;
+        Event.findOne({ _id: id })
+        .then((data) => {
+            let oldEventData = _.cloneDeep(data)
+            let newParticipant = req.body 
+            var { participants } = oldEventData
+            participants.push(newParticipant)
+            Event.findByIdAndUpdate(id, {participants : participants}).then(data =>{
+                res.status(200).json({data : data, message : "Particiapnt was added successfully."})
+            }).catch(err =>{
+                res.status(500).send("Unable to add participants")
+            })
+        })
+        .catch((err) => {
+            return res.status(500).send("Unable to find event");
+        });
+    } else {
+        res.status(403).send("Unauthorized to perform this action.");
+    }
+})
 module.exports = eventRouter;
 
 
